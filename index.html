@@ -170,10 +170,40 @@
       <p class="dialog-desc" id="dialog-desc"></p>
       <dl class="dialog-facts" id="dialog-facts"></dl>
       <div class="dialog-actions">
-        <a class="btn btn-primary" id="dialog-apply" href="#" target="_blank" rel="noopener noreferrer">Apply now</a>
+        <button type="button" class="btn btn-primary" id="dialog-apply">Apply now</button>
         <a class="btn btn-secondary" id="dialog-company" href="#" target="_blank" rel="noopener noreferrer">Company website</a>
       </div>
     </article>
+  </dialog>
+
+  <dialog class="embed-dialog" id="embed-dialog" aria-label="Job application">
+    <div class="embed-shell">
+      <header class="embed-toolbar">
+        <button type="button" class="btn btn-secondary embed-back" id="embed-back">Back to details</button>
+        <p class="embed-title" id="embed-title">Application</p>
+        <div class="embed-toolbar-actions">
+          <a class="btn btn-secondary" id="embed-external" href="#" target="_blank" rel="noopener noreferrer">Open original</a>
+          <button type="button" class="dialog-close embed-close" id="embed-close" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+      </header>
+      <div class="embed-frame-wrap">
+        <div class="embed-loading" id="embed-loading">Loading application…</div>
+        <div class="embed-blocked" id="embed-blocked" hidden>
+          <h3>This board won’t open inside The Intake</h3>
+          <p>Many job sites block in-page viewing for security. Use the original posting instead.</p>
+          <a class="btn btn-primary" id="embed-blocked-link" href="#" target="_blank" rel="noopener noreferrer">Continue to posting</a>
+        </div>
+        <iframe
+          id="embed-frame"
+          class="embed-frame"
+          title="Job application"
+          referrerpolicy="no-referrer"
+          sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
+        ></iframe>
+      </div>
+    </div>
   </dialog>
 
   <script src="app.js"></script>

@@ -26,10 +26,21 @@
     dialogFacts: document.getElementById("dialog-facts"),
     dialogApply: document.getElementById("dialog-apply"),
     dialogCompany: document.getElementById("dialog-company"),
+    embedDialog: document.getElementById("embed-dialog"),
+    embedFrame: document.getElementById("embed-frame"),
+    embedTitle: document.getElementById("embed-title"),
+    embedLoading: document.getElementById("embed-loading"),
+    embedBlocked: document.getElementById("embed-blocked"),
+    embedExternal: document.getElementById("embed-external"),
+    embedBlockedLink: document.getElementById("embed-blocked-link"),
+    embedBack: document.getElementById("embed-back"),
+    embedClose: document.getElementById("embed-close"),
   };
 
   let jobs = [];
   let filtered = [];
+  let activeJob = null;
+  let embedWatchTimer = null;
 
   const CITY_RULES = [
     { key: "Cape Town", match: /cape town|pinelands|claremont|blue downs|cape winelands|ottery/i },
@@ -317,6 +328,7 @@
   }
 
   function openJob(job) {
+    activeJob = job;
     fillLogoElement(els.dialogLogo, job, "job-logo-lg");
 
     els.dialogCategory.textContent = job.category;
@@ -344,7 +356,6 @@
       )
       .join("");
 
-    els.dialogApply.href = job.link || "#";
     if (job.company_url) {
       els.dialogCompany.hidden = false;
       els.dialogCompany.href = job.company_url;
@@ -365,6 +376,89 @@
     } else {
       els.dialog.removeAttribute("open");
     }
+  }
+
+  function showModal(dialog) {
+    if (typeof dialog.showModal === "function") {
+      dialog.showModal();
+    } else {
+      dialog.setAttribute("open", "");
+    }
+  }
+
+  function hideModal(dialog) {
+    if (typeof dialog.close === "function") {
+      dialog.close();
+    } else {
+      dialog.removeAttribute("open");
+    }
+  }
+
+  function clearEmbedWatch() {
+    if (embedWatchTimer) {
+      clearTimeout(embedWatchTimer);
+      embedWatchTimer = null;
+    }
+  }
+
+  function showEmbedBlocked() {
+    els.embedDialog.classList.add("is-blocked");
+    els.embedLoading.hidden = true;
+    els.embedBlocked.hidden = false;
+  }
+
+  function openApplyEmbed(job) {
+    const url = job?.link;
+    if (!url || url === "#") return;
+
+    clearEmbedWatch();
+    els.embedDialog.classList.remove("is-blocked");
+    els.embedBlocked.hidden = true;
+    els.embedLoading.hidden = false;
+    els.embedTitle.textContent = `${job.title} · ${job.company}`;
+    els.embedExternal.href = url;
+    els.embedBlockedLink.href = url;
+
+    // Reset iframe before loading
+    els.embedFrame.src = "about:blank";
+
+    closeDialog();
+    showModal(els.embedDialog);
+
+    requestAnimationFrame(() => {
+      els.embedFrame.src = url;
+    });
+
+    const onLoad = () => {
+      els.embedLoading.hidden = true;
+      // Cross-origin frames often look "blank" but still fire load.
+      // If the board blocks framing, show fallback after a short wait.
+      try {
+        const href = els.embedFrame.contentWindow.location.href;
+        if (!href || href === "about:blank") showEmbedBlocked();
+      } catch {
+        // Opaque cross-origin frame — assume content may be present.
+      }
+    };
+
+    els.embedFrame.addEventListener("load", onLoad, { once: true });
+
+    embedWatchTimer = setTimeout(() => {
+      // Many boards block iframes; if still "loading" or clearly empty, offer fallback.
+      if (!els.embedLoading.hidden) {
+        showEmbedBlocked();
+      }
+    }, 4500);
+  }
+
+  function closeEmbed({ restoreDetails = false } = {}) {
+    clearEmbedWatch();
+    els.embedFrame.src = "about:blank";
+    els.embedLoading.hidden = false;
+    els.embedBlocked.hidden = true;
+    els.embedDialog.classList.remove("is-blocked");
+    hideModal(els.embedDialog);
+    if (restoreDetails && activeJob) openJob(activeJob);
   }
 
   async function loadListings() {
@@ -402,8 +496,28 @@
     if (e.target === els.dialog) closeDialog();
   });
 
+  els.dialogApply.addEventListener("click", () => {
+    if (activeJob) openApplyEmbed(activeJob);
+  });
+
+  els.embedBack.addEventListener("click", () => {
+    closeEmbed({ restoreDetails: true });
+  });
+
+  els.embedClose.addEventListener("click", () => closeEmbed());
+
+  els.embedDialog.addEventListener("click", (e) => {
+    if (e.target === els.embedDialog) closeEmbed();
+  });
+
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && els.dialog.open) closeDialog();
+    if (e.key !== "Escape") return;
+    if (els.embedDialog.open) {
+      e.preventDefault();
+      closeEmbed();
+      return;
+    }
+    if (els.dialog.open) closeDialog();
   });
 
   loadListings();
