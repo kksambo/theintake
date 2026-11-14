@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZZCTW6D9QV"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ZZCTW6D9QV');
+  </script>
+  <script>
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '2066436563865929');
+    fbq('track', 'PageView');
+  </script>
+  <title>CV Builder | The Intake</title>
+  <meta name="description" content="Build a professional CV online and download it as PDF or Word. Free CV builder from The Intake." />
+  <meta name="theme-color" content="#1a5f7a" />
+  <link rel="canonical" href="https://theintake.co.za/cv.html" />
+  <link rel="icon" href="logo-icon.png?v=20261114e" type="image/png" />
+  <link rel="icon" href="favicon-32.png?v=20261114e" type="image/png" sizes="32x32" />
+  <meta property="og:title" content="CV Builder | The Intake" />
+  <meta property="og:description" content="Create a professional CV and download as PDF or Word." />
+  <meta property="og:url" content="https://theintake.co.za/cv.html" />
+  <meta property="og:image" content="https://theintake.co.za/logo.jpg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=20261114f" />
+  <link rel="stylesheet" href="cv.css?v=20261114f" />
+</head>
+<body class="cv-page">
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="The Intake">
+        <img class="brand-logo" src="logo.jpg" alt="The Intake" width="220" height="124" />
+      </a>
+      <nav class="header-nav" aria-label="Primary">
+        <a href="index.html#listings">Find jobs</a>
+        <a href="cv.html" aria-current="page">CV builder</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="cv-main">
+    <section class="cv-intro">
+      <div class="cv-intro-inner">
+        <h1>CV builder</h1>
+        <p>Fill in your details, pick a template, and download a PDF or Word document. Everything stays in your browser.</p>
+      </div>
+    </section>
+
+    <section class="cv-workspace">
+      <div class="cv-workspace-inner">
+        <aside class="cv-editor" aria-label="CV form">
+          <form id="cv-form" autocomplete="on">
+            <fieldset class="cv-fieldset">
+              <legend>Template</legend>
+              <div class="template-picker" role="radiogroup" aria-label="CV template">
+                <label class="template-option">
+                  <input type="radio" name="template" value="classic" checked />
+                  <span>Classic</span>
+                </label>
+                <label class="template-option">
+                  <input type="radio" name="template" value="modern" />
+                  <span>Modern</span>
+                </label>
+                <label class="template-option">
+                  <input type="radio" name="template" value="minimal" />
+                  <span>Minimal</span>
+                </label>
+                <label class="template-option">
+                  <input type="radio" name="template" value="sidebar" />
+                  <span>Sidebar</span>
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset class="cv-fieldset">
+              <legend>Personal details</legend>
+              <label class="cv-field">
+                <span>Full name</span>
+                <input type="text" name="fullName" placeholder="Thandi Molefe" required />
+              </label>
+              <label class="cv-field">
+                <span>Job title</span>
+                <input type="text" name="headline" placeholder="Marketing Coordinator" />
+              </label>
+              <div class="cv-field-row">
+                <label class="cv-field">
+                  <span>Email</span>
+                  <input type="email" name="email" placeholder="you@email.com" />
+                </label>
+                <label class="cv-field">
+                  <span>Phone</span>
+                  <input type="tel" name="phone" placeholder="+27 …" />
+                </label>
+              </div>
+              <div class="cv-field-row">
+                <label class="cv-field">
+                  <span>City</span>
+                  <input type="text" name="location" placeholder="Johannesburg" />
+                </label>
+                <label class="cv-field">
+                  <span>LinkedIn / website</span>
+                  <input type="text" name="website" placeholder="linkedin.com/in/…" />
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset class="cv-fieldset">
+              <legend>Profile</legend>
+              <label class="cv-field">
+                <span>Summary</span>
+                <textarea name="summary" rows="4" placeholder="A short overview of your strengths and what you’re looking for."></textarea>
+              </label>
+            </fieldset>
+
+            <fieldset class="cv-fieldset">
+              <legend>Experience</legend>
+              <div id="experience-list" class="cv-repeat-list"></div>
+              <button type="button" class="btn btn-secondary btn-sm" id="add-experience">Add role</button>
+            </fieldset>
+
+            <fieldset class="cv-fieldset">
+              <legend>Education</legend>
+              <div id="education-list" class="cv-repeat-list"></div>
+              <button type="button" class="btn btn-secondary btn-sm" id="add-education">Add education</button>
+            </fieldset>
+
+            <fieldset class="cv-fieldset">
+              <legend>Skills</legend>
+              <label class="cv-field">
+                <span>Skills (comma-separated)</span>
+                <textarea name="skills" rows="2" placeholder="Communication, Excel, Project management"></textarea>
+              </label>
+            </fieldset>
+
+            <div class="cv-actions">
+              <button type="button" class="btn btn-primary" id="download-pdf">Download PDF</button>
+              <button type="button" class="btn btn-secondary" id="download-docx">Download Word</button>
+              <button type="button" class="btn-text" id="print-cv">Print</button>
+              <button type="button" class="btn-text" id="clear-cv">Clear draft</button>
+            </div>
+            <p class="cv-save-note" id="cv-save-note" aria-live="polite">Draft saves automatically on this device.</p>
+          </form>
+        </aside>
+
+        <div class="cv-preview-pane">
+          <div class="cv-preview-toolbar">
+            <span>Live preview</span>
+            <span class="cv-preview-hint">A4 · updates as you type</span>
+          </div>
+          <div class="cv-preview-scroll">
+            <div id="cv-preview" class="cv-sheet tpl-classic" aria-live="polite"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <a class="footer-brand" href="index.html" aria-label="The Intake">
+        <img class="footer-logo" src="logo.jpg" alt="The Intake" width="160" height="90" />
+      </a>
+      <p class="footer-note">Build your CV · Find your next role</p>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+  <script src="cv.js?v=20261114f"></script>
+</body>
+</html>
