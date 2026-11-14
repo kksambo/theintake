@@ -405,6 +405,7 @@
     els.embedDialog.classList.add("is-blocked");
     els.embedLoading.hidden = true;
     els.embedBlocked.hidden = false;
+    els.embedBlockedLink?.focus?.();
   }
 
   function openApplyEmbed(job) {
@@ -419,46 +420,43 @@
     els.embedExternal.href = url;
     els.embedBlockedLink.href = url;
 
-    // Reset iframe before loading
-    els.embedFrame.src = "about:blank";
-
+    // Close details first, then open embed on the next tick.
+    // Opening a second <dialog> in the same click stack fails in some browsers.
     closeDialog();
-    showModal(els.embedDialog);
 
-    requestAnimationFrame(() => {
+    window.setTimeout(() => {
+      if (!els.embedDialog.open) showModal(els.embedDialog);
+
+      const onLoad = () => {
+        try {
+          const href = els.embedFrame.contentWindow?.location?.href || "";
+          if (!href || href === "about:blank") return;
+        } catch {
+          // Cross-origin page loaded inside the frame.
+        }
+        els.embedLoading.hidden = true;
+      };
+
+      els.embedFrame.onload = onLoad;
       els.embedFrame.src = url;
-    });
 
-    const onLoad = () => {
-      els.embedLoading.hidden = true;
-      // Cross-origin frames often look "blank" but still fire load.
-      // If the board blocks framing, show fallback after a short wait.
-      try {
-        const href = els.embedFrame.contentWindow.location.href;
-        if (!href || href === "about:blank") showEmbedBlocked();
-      } catch {
-        // Opaque cross-origin frame — assume content may be present.
-      }
-    };
-
-    els.embedFrame.addEventListener("load", onLoad, { once: true });
-
-    embedWatchTimer = setTimeout(() => {
-      // Many boards block iframes; if still "loading" or clearly empty, offer fallback.
-      if (!els.embedLoading.hidden) {
-        showEmbedBlocked();
-      }
-    }, 4500);
+      embedWatchTimer = setTimeout(() => {
+        if (!els.embedLoading.hidden) showEmbedBlocked();
+      }, 4000);
+    }, 50);
   }
 
   function closeEmbed({ restoreDetails = false } = {}) {
     clearEmbedWatch();
+    els.embedFrame.onload = null;
     els.embedFrame.src = "about:blank";
     els.embedLoading.hidden = false;
     els.embedBlocked.hidden = true;
     els.embedDialog.classList.remove("is-blocked");
     hideModal(els.embedDialog);
-    if (restoreDetails && activeJob) openJob(activeJob);
+    if (restoreDetails && activeJob) {
+      window.setTimeout(() => openJob(activeJob), 50);
+    }
   }
 
   async function loadListings() {
@@ -496,8 +494,11 @@
     if (e.target === els.dialog) closeDialog();
   });
 
-  els.dialogApply.addEventListener("click", () => {
-    if (activeJob) openApplyEmbed(activeJob);
+  els.dialogApply.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!activeJob) return;
+    openApplyEmbed(activeJob);
   });
 
   els.embedBack.addEventListener("click", () => {
