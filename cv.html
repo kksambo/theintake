@@ -32,10 +32,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=20261114f" />
-  <link rel="stylesheet" href="cv.css?v=20261114f" />
+  <link rel="stylesheet" href="styles.css?v=20261114g" />
+  <link rel="stylesheet" href="cv.css?v=20261114g" />
 </head>
 <body class="cv-page">
+  <div id="cv-export-mount" class="cv-export-mount" aria-hidden="true"></div>
   <header class="site-header">
     <div class="header-inner">
       <a class="brand" href="index.html" aria-label="The Intake">
@@ -52,7 +53,7 @@
     <section class="cv-intro">
       <div class="cv-intro-inner">
         <h1>CV builder</h1>
-        <p>Fill in your details, pick a template, and download a PDF or Word document. Everything stays in your browser.</p>
+        <p>An example CV is ready below — download or print it as-is, or edit the fields to make it yours. Everything stays in your browser.</p>
       </div>
     </section>
 
@@ -86,30 +87,30 @@
               <legend>Personal details</legend>
               <label class="cv-field">
                 <span>Full name</span>
-                <input type="text" name="fullName" placeholder="Thandi Molefe" required />
+                <input type="text" name="fullName" />
               </label>
               <label class="cv-field">
                 <span>Job title</span>
-                <input type="text" name="headline" placeholder="Marketing Coordinator" />
+                <input type="text" name="headline" />
               </label>
               <div class="cv-field-row">
                 <label class="cv-field">
                   <span>Email</span>
-                  <input type="email" name="email" placeholder="you@email.com" />
+                  <input type="email" name="email" />
                 </label>
                 <label class="cv-field">
                   <span>Phone</span>
-                  <input type="tel" name="phone" placeholder="+27 …" />
+                  <input type="tel" name="phone" />
                 </label>
               </div>
               <div class="cv-field-row">
                 <label class="cv-field">
                   <span>City</span>
-                  <input type="text" name="location" placeholder="Johannesburg" />
+                  <input type="text" name="location" />
                 </label>
                 <label class="cv-field">
                   <span>LinkedIn / website</span>
-                  <input type="text" name="website" placeholder="linkedin.com/in/…" />
+                  <input type="text" name="website" />
                 </label>
               </div>
             </fieldset>
@@ -118,7 +119,7 @@
               <legend>Profile</legend>
               <label class="cv-field">
                 <span>Summary</span>
-                <textarea name="summary" rows="4" placeholder="A short overview of your strengths and what you’re looking for."></textarea>
+                <textarea name="summary" rows="4"></textarea>
               </label>
             </fieldset>
 
@@ -138,7 +139,7 @@
               <legend>Skills</legend>
               <label class="cv-field">
                 <span>Skills (comma-separated)</span>
-                <textarea name="skills" rows="2" placeholder="Communication, Excel, Project management"></textarea>
+                <textarea name="skills" rows="2"></textarea>
               </label>
             </fieldset>
 
@@ -146,9 +147,9 @@
               <button type="button" class="btn btn-primary" id="download-pdf">Download PDF</button>
               <button type="button" class="btn btn-secondary" id="download-docx">Download Word</button>
               <button type="button" class="btn-text" id="print-cv">Print</button>
-              <button type="button" class="btn-text" id="clear-cv">Clear draft</button>
+              <button type="button" class="btn-text" id="reset-sample">Reset example</button>
             </div>
-            <p class="cv-save-note" id="cv-save-note" aria-live="polite">Draft saves automatically on this device.</p>
+            <p class="cv-save-note" id="cv-save-note" aria-live="polite">Example CV loaded — edit anytime. Draft saves on this device.</p>
           </form>
         </aside>
 
@@ -177,6 +178,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
-  <script src="cv.js?v=20261114f"></script>
+  <script src="cv.js?v=20261114g"></script>
 </body>
 </html>

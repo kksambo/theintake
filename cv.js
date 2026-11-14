@@ -1,13 +1,14 @@
 (function () {
   "use strict";
 
-  const STORAGE_KEY = "theintake-cv-draft-v1";
+  const STORAGE_KEY = "theintake-cv-draft-v2";
 
   const form = document.getElementById("cv-form");
   const preview = document.getElementById("cv-preview");
   const experienceList = document.getElementById("experience-list");
   const educationList = document.getElementById("education-list");
   const saveNote = document.getElementById("cv-save-note");
+  const exportMount = document.getElementById("cv-export-mount");
 
   const emptyExperience = () => ({
     title: "",
@@ -26,19 +27,57 @@
     details: "",
   });
 
-  let state = {
-    template: "classic",
-    fullName: "",
-    headline: "",
-    email: "",
-    phone: "",
-    location: "",
-    website: "",
-    summary: "",
-    skills: "",
-    experience: [emptyExperience()],
-    education: [emptyEducation()],
+  const SAMPLE_CV = {
+    template: "modern",
+    fullName: "Thandi Molefe",
+    headline: "Marketing Coordinator",
+    email: "thandi.molefe@email.com",
+    phone: "+27 82 555 0142",
+    location: "Johannesburg, South Africa",
+    website: "linkedin.com/in/thandimolefe",
+    summary:
+      "Results-driven marketing coordinator with 4+ years’ experience supporting campaigns across digital, social, and events. Skilled at turning briefs into clear plans, tracking performance, and working closely with sales and creative teams. Looking for a role where I can grow into campaign ownership.",
+    skills:
+      "Campaign coordination, Social media, Content calendars, Google Analytics, Canva, Excel, Stakeholder communication, Event support, Copywriting, CRM basics",
+    experience: [
+      {
+        title: "Marketing Coordinator",
+        company: "BrightPath Retail",
+        location: "Johannesburg",
+        start: "Mar 2022",
+        end: "Present",
+        details:
+          "Plan and schedule weekly social content for three brand channels.\nCoordinate email campaigns with sales; improved open rates by 18%.\nSupport product launches, including briefs, timelines, and vendor follow-ups.\nReport monthly KPIs to the marketing manager using Analytics and spreadsheet dashboards.",
+      },
+      {
+        title: "Marketing Assistant",
+        company: "Horizon Media",
+        location: "Pretoria",
+        start: "Jan 2020",
+        end: "Feb 2022",
+        details:
+          "Assisted with client social calendars, asset organisation, and posting schedules.\nPrepared competitor snapshots and basic campaign performance summaries.\nHelped run brand activations at malls and campus events.",
+      },
+    ],
+    education: [
+      {
+        school: "University of Johannesburg",
+        qualification: "BCom Marketing Management",
+        start: "2016",
+        end: "2019",
+        details: "Graduated with distinction in Consumer Behaviour.",
+      },
+      {
+        school: "Google / Coursera",
+        qualification: "Google Digital Marketing & E-commerce Certificate",
+        start: "2021",
+        end: "2021",
+        details: "",
+      },
+    ],
   };
+
+  let state = structuredClone(SAMPLE_CV);
 
   function escapeHtml(str) {
     return String(str || "")
@@ -135,15 +174,7 @@
     return `<section class="cv-section"><h2 class="cv-section-title">${title}</h2>${html}</section>`;
   }
 
-  function renderPreview() {
-    preview.className = `cv-sheet tpl-${state.template}`;
-
-    if (!hasContent()) {
-      preview.innerHTML =
-        '<p class="cv-empty-hint">Your CV preview will appear here as you fill in the form.</p>';
-      return;
-    }
-
+  function buildSheetHtml() {
     const name = escapeHtml(state.fullName || "Your name");
     const headline = escapeHtml(state.headline);
     const contact = contactBits()
@@ -157,7 +188,7 @@
     const skills = renderSkills();
 
     if (state.template === "modern") {
-      preview.innerHTML = `
+      return `
         <div class="cv-banner">
           <h1 class="cv-name">${name}</h1>
           ${headline ? `<p class="cv-headline">${headline}</p>` : ""}
@@ -169,11 +200,10 @@
           ${section("Education", edu)}
           ${section("Skills", skills)}
         </div>`;
-      return;
     }
 
     if (state.template === "sidebar") {
-      preview.innerHTML = `
+      return `
         <aside class="cv-side">
           <h1 class="cv-name">${name}</h1>
           ${headline ? `<p class="cv-headline">${headline}</p>` : ""}
@@ -189,11 +219,9 @@
           ${section("Experience", exp)}
           ${section("Education", edu)}
         </div>`;
-      return;
     }
 
-    // classic + minimal share the same structure
-    preview.innerHTML = `
+    return `
       <header>
         <h1 class="cv-name">${name}</h1>
         ${headline ? `<p class="cv-headline">${headline}</p>` : ""}
@@ -203,6 +231,16 @@
       ${section("Experience", exp)}
       ${section("Education", edu)}
       ${section("Skills", skills)}`;
+  }
+
+  function renderPreview() {
+    preview.className = `cv-sheet tpl-${state.template}`;
+    if (!hasContent()) {
+      preview.innerHTML =
+        '<p class="cv-empty-hint">Your CV preview will appear here as you fill in the form.</p>';
+      return;
+    }
+    preview.innerHTML = buildSheetHtml();
   }
 
   function readFormBasics() {
@@ -257,7 +295,7 @@
           <button type="button" class="cv-remove" data-remove="experience">Remove</button>
         </div>
         <label class="cv-field"><span>Job title</span>
-          <input data-field="title" value="${escapeHtml(item.title)}" placeholder="Role title" />
+          <input data-field="title" value="${escapeHtml(item.title)}" />
         </label>
         <div class="cv-field-row">
           <label class="cv-field"><span>Company</span>
@@ -269,16 +307,14 @@
         </div>
         <div class="cv-field-row">
           <label class="cv-field"><span>Start</span>
-            <input data-field="start" value="${escapeHtml(item.start)}" placeholder="Jan 2022" />
+            <input data-field="start" value="${escapeHtml(item.start)}" />
           </label>
           <label class="cv-field"><span>End</span>
-            <input data-field="end" value="${escapeHtml(item.end)}" placeholder="Present" />
+            <input data-field="end" value="${escapeHtml(item.end)}" />
           </label>
         </div>
         <label class="cv-field"><span>Highlights</span>
-          <textarea data-field="details" rows="3" placeholder="Key responsibilities and wins">${escapeHtml(
-            item.details
-          )}</textarea>
+          <textarea data-field="details" rows="3">${escapeHtml(item.details)}</textarea>
         </label>
       </div>`;
   }
@@ -328,14 +364,19 @@
     form.website.value = state.website;
     form.summary.value = state.summary;
     form.skills.value = state.skills;
-    const tpl = form.querySelector(`input[name="template"][value="${state.template}"]`);
+    const tpl = form.querySelector(
+      `input[name="template"][value="${state.template}"]`
+    );
     if (tpl) tpl.checked = true;
   }
 
   function persist() {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      if (saveNote) saveNote.textContent = "Draft saved on this device.";
+      if (saveNote) {
+        saveNote.textContent =
+          "Example CV loaded — edit anytime. Draft saves on this device.";
+      }
     } catch (_) {
       if (saveNote) saveNote.textContent = "Could not save draft on this device.";
     }
@@ -346,20 +387,26 @@
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return;
       const parsed = JSON.parse(raw);
+      if (!parsed || typeof parsed !== "object") return;
+      // Ignore empty drafts so the sample CV always shows for first useful visit
+      const looksEmpty =
+        !String(parsed.fullName || "").trim() &&
+        !String(parsed.summary || "").trim();
+      if (looksEmpty) return;
       state = {
-        ...state,
+        ...structuredClone(SAMPLE_CV),
         ...parsed,
         experience:
           Array.isArray(parsed.experience) && parsed.experience.length
             ? parsed.experience
-            : [emptyExperience()],
+            : structuredClone(SAMPLE_CV.experience),
         education:
           Array.isArray(parsed.education) && parsed.education.length
             ? parsed.education
-            : [emptyEducation()],
+            : structuredClone(SAMPLE_CV.education),
       };
     } catch (_) {
-      /* ignore corrupt draft */
+      /* keep sample */
     }
   }
 
@@ -368,48 +415,159 @@
     return `${name}_CV`;
   }
 
+  function wait(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  /** Full-size clone outside scaled/overflow preview — used for PDF capture */
+  function buildExportSheet() {
+    if (!exportMount) return null;
+    exportMount.innerHTML = "";
+    const sheet = document.createElement("div");
+    sheet.className = `cv-sheet tpl-${state.template} cv-sheet-export`;
+    sheet.setAttribute("aria-hidden", "true");
+    sheet.innerHTML = buildSheetHtml();
+    exportMount.appendChild(sheet);
+    return sheet;
+  }
+
+  function clearExportSheet() {
+    if (exportMount) exportMount.innerHTML = "";
+  }
+
+  function getExportStylesheetHref() {
+    const link = document.querySelector('link[href*="cv.css"]');
+    return link ? link.href : "cv.css";
+  }
+
+  async function openStyledPrintWindow() {
+    const sheetHtml = `<div class="cv-sheet tpl-${state.template}">${buildSheetHtml()}</div>`;
+    const cssHref = getExportStylesheetHref();
+    const win = window.open("", "_blank", "noopener,noreferrer,width=900,height=1200");
+    if (!win) {
+      alert("Please allow pop-ups to print your CV.");
+      return null;
+    }
+    win.document.open();
+    win.document.write(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>${escapeHtml(state.fullName || "CV")}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="${cssHref}" />
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; }
+    .cv-sheet {
+      transform: none !important;
+      margin: 0 auto !important;
+      box-shadow: none !important;
+      width: 210mm !important;
+      min-height: 297mm !important;
+    }
+    @page { size: A4; margin: 0; }
+    @media print {
+      html, body { margin: 0; background: #fff; }
+      .cv-sheet { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>${sheetHtml}</body>
+</html>`);
+    win.document.close();
+    // Wait for stylesheet + fonts
+    await wait(450);
+    try {
+      if (win.document.fonts && win.document.fonts.ready) {
+        await win.document.fonts.ready;
+      }
+    } catch (_) {
+      /* ignore */
+    }
+    await wait(150);
+    return win;
+  }
+
   async function downloadPdf() {
     if (!window.html2pdf) {
       alert("PDF library failed to load. Check your connection and try again.");
       return;
     }
     if (!hasContent()) {
-      alert("Add your name or some details before downloading.");
+      alert("Add some CV details before downloading.");
       return;
     }
     const btn = document.getElementById("download-pdf");
     btn.disabled = true;
     btn.textContent = "Preparing PDF…";
+    let sheet = null;
     try {
+      if (document.fonts && document.fonts.ready) {
+        await document.fonts.ready;
+      }
+      sheet = buildExportSheet();
+      if (!sheet) throw new Error("Export mount missing");
+      await wait(200);
+
       await window
         .html2pdf()
         .set({
           margin: 0,
           filename: `${fileBase()}.pdf`,
           image: { type: "jpeg", quality: 0.98 },
-          html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+          html2canvas: {
+            scale: 2,
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: "#ffffff",
+            logging: false,
+            windowWidth: 794,
+            windowHeight: sheet.scrollHeight,
+            scrollX: 0,
+            scrollY: 0,
+          },
           jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-          pagebreak: { mode: ["avoid-all", "css", "legacy"] },
+          pagebreak: { mode: ["css", "legacy"] },
         })
-        .from(preview)
+        .from(sheet)
         .save();
     } catch (err) {
       console.error(err);
       alert("Could not create the PDF. Try Print instead.");
     } finally {
+      clearExportSheet();
       btn.disabled = false;
       btn.textContent = "Download PDF";
     }
   }
 
+  async function printCv() {
+    if (!hasContent()) {
+      alert("Add some CV details before printing.");
+      return;
+    }
+    const win = await openStyledPrintWindow();
+    if (!win) return;
+    try {
+      win.focus();
+      win.print();
+    } catch (err) {
+      console.error(err);
+      alert("Print failed. Try Download PDF instead.");
+    }
+  }
+
   async function downloadDocx() {
-    const { Document, Packer, Paragraph, TextRun, HeadingLevel } = window.docx || {};
+    const { Document, Packer, Paragraph, TextRun, HeadingLevel, BorderStyle } =
+      window.docx || {};
     if (!Document || !window.saveAs) {
       alert("Word export failed to load. Check your connection and try again.");
       return;
     }
     if (!hasContent()) {
-      alert("Add your name or some details before downloading.");
+      alert("Add some CV details before downloading.");
       return;
     }
 
@@ -419,6 +577,16 @@
       children.push(
         new Paragraph({
           spacing: { after: opts.after ?? 120 },
+          border: opts.borderBottom
+            ? {
+                bottom: {
+                  style: BorderStyle.SINGLE,
+                  size: 6,
+                  color: "1A5F7A",
+                  space: 8,
+                },
+              }
+            : undefined,
           children: [
             new TextRun({
               text,
@@ -436,7 +604,15 @@
       children.push(
         new Paragraph({
           heading: HeadingLevel.HEADING_2,
-          spacing: { before: 240, after: 120 },
+          spacing: { before: 280, after: 120 },
+          border: {
+            bottom: {
+              style: BorderStyle.SINGLE,
+              size: 6,
+              color: "1A5F7A",
+              space: 4,
+            },
+          },
           children: [
             new TextRun({
               text,
@@ -450,9 +626,14 @@
       );
     };
 
-    push(state.fullName || "CV", { bold: true, size: 36, after: 60 });
+    push(state.fullName || "CV", { bold: true, size: 40, after: 60 });
     push(state.headline, { size: 24, color: "1A5F7A", after: 80 });
-    push(contactBits().join("  ·  "), { size: 20, color: "445566", after: 200 });
+    push(contactBits().join("  ·  "), {
+      size: 20,
+      color: "445566",
+      after: 200,
+      borderBottom: true,
+    });
 
     if (state.summary.trim()) {
       heading("Profile");
@@ -463,10 +644,10 @@
     if (expItems.length) {
       heading("Experience");
       expItems.forEach((e) => {
-        push(
-          [e.title, e.company].filter(Boolean).join(" — "),
-          { bold: true, after: 40 }
-        );
+        push([e.title, e.company].filter(Boolean).join(" — "), {
+          bold: true,
+          after: 40,
+        });
         push(
           [e.location, [e.start, e.end].filter(Boolean).join(" – ")]
             .filter(Boolean)
@@ -485,10 +666,10 @@
     if (eduItems.length) {
       heading("Education");
       eduItems.forEach((e) => {
-        push(
-          [e.qualification, e.school].filter(Boolean).join(" — "),
-          { bold: true, after: 40 }
-        );
+        push([e.qualification, e.school].filter(Boolean).join(" — "), {
+          bold: true,
+          after: 40,
+        });
         push([e.start, e.end].filter(Boolean).join(" – "), {
           size: 20,
           color: "667788",
@@ -508,9 +689,15 @@
     const doc = new Document({
       sections: [{ properties: {}, children }],
     });
-
     const blob = await Packer.toBlob(doc);
     window.saveAs(blob, `${fileBase()}.docx`);
+  }
+
+  function applyStateToUi() {
+    fillBasics();
+    renderRepeatEditors();
+    renderPreview();
+    persist();
   }
 
   form.addEventListener("input", syncFromDom);
@@ -556,32 +743,16 @@
 
   document.getElementById("download-pdf").addEventListener("click", downloadPdf);
   document.getElementById("download-docx").addEventListener("click", downloadDocx);
-  document.getElementById("print-cv").addEventListener("click", () => window.print());
+  document.getElementById("print-cv").addEventListener("click", printCv);
 
-  document.getElementById("clear-cv").addEventListener("click", () => {
-    if (!confirm("Clear your saved CV draft on this device?")) return;
+  document.getElementById("reset-sample").addEventListener("click", () => {
+    if (!confirm("Reset to the example CV?")) return;
     localStorage.removeItem(STORAGE_KEY);
-    state = {
-      template: "classic",
-      fullName: "",
-      headline: "",
-      email: "",
-      phone: "",
-      location: "",
-      website: "",
-      summary: "",
-      skills: "",
-      experience: [emptyExperience()],
-      education: [emptyEducation()],
-    };
-    fillBasics();
-    renderRepeatEditors();
-    renderPreview();
-    if (saveNote) saveNote.textContent = "Draft cleared.";
+    state = structuredClone(SAMPLE_CV);
+    applyStateToUi();
+    if (saveNote) saveNote.textContent = "Example CV restored.";
   });
 
   loadDraft();
-  fillBasics();
-  renderRepeatEditors();
-  renderPreview();
+  applyStateToUi();
 })();
