@@ -19,27 +19,28 @@
     fbq('init', '2066436563865929');
     fbq('track', 'PageView');
   </script>
-  <title>CV Builder | The Intake</title>
-  <meta name="description" content="Build a professional CV online and download it as PDF or Word. Free CV builder from The Intake." />
+  <title>CV & Cover Letter Builder | The Intake</title>
+  <meta name="description" content="Build a professional CV or cover letter online and download as PDF or Word. Free from The Intake." />
   <meta name="theme-color" content="#1a5f7a" />
   <link rel="canonical" href="https://theintake.co.za/cv.html" />
   <link rel="icon" href="logo-icon.png?v=20261114e" type="image/png" />
   <link rel="icon" href="favicon-32.png?v=20261114e" type="image/png" sizes="32x32" />
-  <meta property="og:title" content="CV Builder | The Intake" />
-  <meta property="og:description" content="Create a professional CV and download as PDF or Word." />
+  <meta property="og:title" content="CV & Cover Letter Builder | The Intake" />
+  <meta property="og:description" content="Create a professional CV or cover letter and download as PDF or Word." />
   <meta property="og:url" content="https://theintake.co.za/cv.html" />
   <meta property="og:image" content="https://theintake.co.za/logo.jpg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=20261114h" />
-  <link rel="stylesheet" href="cv.css?v=20261114h" />
+  <link rel="stylesheet" href="styles.css?v=20261114i" />
+  <link rel="stylesheet" href="cv.css?v=20261114i" />
 </head>
 <body class="cv-page">
   <div id="cv-export-mount" class="cv-export-mount" aria-hidden="true"></div>
   <div id="cv-export-overlay" class="cv-export-overlay" hidden>
     <p>Creating your PDF…</p>
   </div>
+
   <header class="site-header">
     <div class="header-inner">
       <a class="brand" href="index.html" aria-label="The Intake">
@@ -55,96 +56,101 @@
   <main class="cv-main">
     <section class="cv-intro">
       <div class="cv-intro-inner">
-        <h1>CV builder</h1>
-        <p>An example CV is ready below — download or print it as-is, or edit the fields to make it yours. Everything stays in your browser.</p>
+        <h1>CV &amp; cover letter</h1>
+        <p>A complete example is ready — download or print as-is, or edit it to make it yours. Everything stays in your browser.</p>
+        <div class="doc-tabs" role="tablist" aria-label="Document type">
+          <button type="button" class="doc-tab is-active" role="tab" id="tab-cv" aria-selected="true" data-mode="cv">CV</button>
+          <button type="button" class="doc-tab" role="tab" id="tab-letter" aria-selected="false" data-mode="letter">Cover letter</button>
+        </div>
       </div>
     </section>
 
     <section class="cv-workspace">
       <div class="cv-workspace-inner">
-        <aside class="cv-editor" aria-label="CV form">
+        <aside class="cv-editor" aria-label="Editor">
           <form id="cv-form" autocomplete="on">
-            <fieldset class="cv-fieldset">
-              <legend>Template</legend>
-              <div class="template-picker" role="radiogroup" aria-label="CV template">
-                <label class="template-option">
-                  <input type="radio" name="template" value="classic" checked />
-                  <span>Classic</span>
-                </label>
-                <label class="template-option">
-                  <input type="radio" name="template" value="modern" />
-                  <span>Modern</span>
-                </label>
-                <label class="template-option">
-                  <input type="radio" name="template" value="minimal" />
-                  <span>Minimal</span>
-                </label>
-                <label class="template-option">
-                  <input type="radio" name="template" value="sidebar" />
-                  <span>Sidebar</span>
-                </label>
+
+            <fieldset class="cv-fieldset" data-panel="cv">
+              <legend>CV template</legend>
+              <div class="template-picker template-picker-wide" role="radiogroup" aria-label="CV template">
+                <label class="template-option"><input type="radio" name="cvTemplate" value="classic" /><span>Classic</span></label>
+                <label class="template-option"><input type="radio" name="cvTemplate" value="modern" checked /><span>Modern</span></label>
+                <label class="template-option"><input type="radio" name="cvTemplate" value="minimal" /><span>Minimal</span></label>
+                <label class="template-option"><input type="radio" name="cvTemplate" value="sidebar" /><span>Sidebar</span></label>
+                <label class="template-option"><input type="radio" name="cvTemplate" value="executive" /><span>Executive</span></label>
+                <label class="template-option"><input type="radio" name="cvTemplate" value="compact" /><span>Compact</span></label>
+                <label class="template-option"><input type="radio" name="cvTemplate" value="elegant" /><span>Elegant</span></label>
+                <label class="template-option"><input type="radio" name="cvTemplate" value="bold" /><span>Bold</span></label>
+              </div>
+            </fieldset>
+
+            <fieldset class="cv-fieldset" data-panel="letter" hidden>
+              <legend>Letter template</legend>
+              <div class="template-picker" role="radiogroup" aria-label="Cover letter template">
+                <label class="template-option"><input type="radio" name="letterTemplate" value="formal" checked /><span>Formal</span></label>
+                <label class="template-option"><input type="radio" name="letterTemplate" value="modern" /><span>Modern</span></label>
+                <label class="template-option"><input type="radio" name="letterTemplate" value="minimal" /><span>Minimal</span></label>
+                <label class="template-option"><input type="radio" name="letterTemplate" value="warm" /><span>Warm</span></label>
+                <label class="template-option"><input type="radio" name="letterTemplate" value="classic" /><span>Classic</span></label>
+                <label class="template-option"><input type="radio" name="letterTemplate" value="banded" /><span>Banded</span></label>
               </div>
             </fieldset>
 
             <fieldset class="cv-fieldset">
-              <legend>Personal details</legend>
-              <label class="cv-field">
-                <span>Full name</span>
-                <input type="text" name="fullName" />
-              </label>
-              <label class="cv-field">
-                <span>Job title</span>
-                <input type="text" name="headline" />
-              </label>
+              <legend>Your details</legend>
+              <label class="cv-field"><span>Full name</span><input type="text" name="fullName" /></label>
+              <label class="cv-field" data-panel="cv"><span>Job title</span><input type="text" name="headline" /></label>
               <div class="cv-field-row">
-                <label class="cv-field">
-                  <span>Email</span>
-                  <input type="email" name="email" />
-                </label>
-                <label class="cv-field">
-                  <span>Phone</span>
-                  <input type="tel" name="phone" />
-                </label>
+                <label class="cv-field"><span>Email</span><input type="email" name="email" /></label>
+                <label class="cv-field"><span>Phone</span><input type="tel" name="phone" /></label>
               </div>
               <div class="cv-field-row">
-                <label class="cv-field">
-                  <span>City</span>
-                  <input type="text" name="location" />
-                </label>
-                <label class="cv-field">
-                  <span>LinkedIn / website</span>
-                  <input type="text" name="website" />
-                </label>
+                <label class="cv-field"><span>City</span><input type="text" name="location" /></label>
+                <label class="cv-field"><span>LinkedIn / website</span><input type="text" name="website" /></label>
               </div>
             </fieldset>
 
-            <fieldset class="cv-fieldset">
-              <legend>Profile</legend>
-              <label class="cv-field">
-                <span>Summary</span>
-                <textarea name="summary" rows="4"></textarea>
-              </label>
-            </fieldset>
+            <div data-panel="cv">
+              <fieldset class="cv-fieldset">
+                <legend>Profile</legend>
+                <label class="cv-field"><span>Summary</span><textarea name="summary" rows="4"></textarea></label>
+              </fieldset>
 
-            <fieldset class="cv-fieldset">
-              <legend>Experience</legend>
-              <div id="experience-list" class="cv-repeat-list"></div>
-              <button type="button" class="btn btn-secondary btn-sm" id="add-experience">Add role</button>
-            </fieldset>
+              <fieldset class="cv-fieldset">
+                <legend>Experience</legend>
+                <div id="experience-list" class="cv-repeat-list"></div>
+                <button type="button" class="btn btn-secondary btn-sm" id="add-experience">Add role</button>
+              </fieldset>
 
-            <fieldset class="cv-fieldset">
-              <legend>Education</legend>
-              <div id="education-list" class="cv-repeat-list"></div>
-              <button type="button" class="btn btn-secondary btn-sm" id="add-education">Add education</button>
-            </fieldset>
+              <fieldset class="cv-fieldset">
+                <legend>Education</legend>
+                <div id="education-list" class="cv-repeat-list"></div>
+                <button type="button" class="btn btn-secondary btn-sm" id="add-education">Add education</button>
+              </fieldset>
 
-            <fieldset class="cv-fieldset">
-              <legend>Skills</legend>
-              <label class="cv-field">
-                <span>Skills (comma-separated)</span>
-                <textarea name="skills" rows="2"></textarea>
-              </label>
-            </fieldset>
+              <fieldset class="cv-fieldset">
+                <legend>Skills</legend>
+                <label class="cv-field"><span>Skills (comma-separated)</span><textarea name="skills" rows="2"></textarea></label>
+              </fieldset>
+            </div>
+
+            <div data-panel="letter" hidden>
+              <fieldset class="cv-fieldset">
+                <legend>Application</legend>
+                <label class="cv-field"><span>Date</span><input type="text" name="letterDate" /></label>
+                <label class="cv-field"><span>Hiring manager / recipient</span><input type="text" name="recipientName" /></label>
+                <label class="cv-field"><span>Company</span><input type="text" name="companyName" /></label>
+                <label class="cv-field"><span>Company address</span><input type="text" name="companyAddress" /></label>
+                <label class="cv-field"><span>Role you’re applying for</span><input type="text" name="roleTitle" /></label>
+              </fieldset>
+
+              <fieldset class="cv-fieldset">
+                <legend>Letter</legend>
+                <label class="cv-field"><span>Greeting</span><input type="text" name="greeting" /></label>
+                <label class="cv-field"><span>Body</span><textarea name="letterBody" rows="14"></textarea></label>
+                <label class="cv-field"><span>Closing</span><input type="text" name="closing" /></label>
+              </fieldset>
+            </div>
 
             <div class="cv-actions">
               <button type="button" class="btn btn-primary" id="download-pdf">Download PDF</button>
@@ -152,17 +158,17 @@
               <button type="button" class="btn-text" id="print-cv">Print</button>
               <button type="button" class="btn-text" id="reset-sample">Reset example</button>
             </div>
-            <p class="cv-save-note" id="cv-save-note" aria-live="polite">Example CV loaded — edit anytime. Draft saves on this device.</p>
+            <p class="cv-save-note" id="cv-save-note" aria-live="polite">Example loaded — edit anytime. Draft saves on this device.</p>
           </form>
         </aside>
 
         <div class="cv-preview-pane">
           <div class="cv-preview-toolbar">
-            <span>Live preview</span>
+            <span id="preview-label">CV preview</span>
             <span class="cv-preview-hint">A4 · updates as you type</span>
           </div>
           <div class="cv-preview-scroll">
-            <div id="cv-preview" class="cv-sheet tpl-classic" aria-live="polite"></div>
+            <div id="cv-preview" class="cv-sheet tpl-modern" aria-live="polite"></div>
           </div>
         </div>
       </div>
@@ -174,7 +180,7 @@
       <a class="footer-brand" href="index.html" aria-label="The Intake">
         <img class="footer-logo" src="logo.jpg" alt="The Intake" width="160" height="90" />
       </a>
-      <p class="footer-note">Build your CV · Find your next role</p>
+      <p class="footer-note">Build your CV · Write your cover letter · Find your next role</p>
     </div>
   </footer>
 
@@ -182,6 +188,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
-  <script src="cv.js?v=20261114h"></script>
+  <script src="cv.js?v=20261114i"></script>
 </body>
 </html>

@@ -31,6 +31,43 @@
   color: var(--muted);
 }
 
+.doc-tabs {
+  display: inline-flex;
+  gap: 0.35rem;
+  margin-top: 1.15rem;
+  padding: 0.25rem;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+
+.doc-tab {
+  border: 0;
+  background: transparent;
+  color: var(--ink-soft);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.5rem 1.1rem;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.doc-tab.is-active {
+  background: var(--accent);
+  color: #fff;
+}
+
+.template-picker-wide {
+  grid-template-columns: 1fr 1fr;
+}
+
+@media (min-width: 420px) {
+  .template-picker-wide {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 .cv-workspace {
   padding: 1.25rem 1.5rem 3rem;
 }
@@ -524,6 +561,323 @@
   color: #1a5f7a;
 }
 
+/* Executive */
+.tpl-executive {
+  padding: 18mm 16mm;
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  font-size: 10.2pt;
+  line-height: 1.45;
+  text-align: left;
+}
+
+.tpl-executive .cv-exec-header {
+  text-align: center;
+  margin-bottom: 0.35rem;
+}
+
+.tpl-executive .cv-name {
+  font-family: "Outfit", sans-serif;
+  font-size: 1.9rem;
+  letter-spacing: -0.03em;
+}
+
+.tpl-executive .cv-headline {
+  margin-top: 0.25rem;
+  color: #1a5f7a;
+  font-weight: 600;
+}
+
+.tpl-executive .cv-contact {
+  justify-content: center;
+  margin-top: 0.55rem;
+}
+
+.tpl-executive .cv-exec-rule {
+  margin: 0.85rem auto 0;
+  width: 100%;
+  border-top: 2px solid #1a5f7a;
+  border-bottom: 1px solid #c5d4e0;
+  height: 5px;
+}
+
+.tpl-executive .cv-section-title {
+  color: #0f1c2e;
+  border-bottom: 1px solid #d8dee6;
+  padding-bottom: 0.2rem;
+}
+
+/* Compact */
+.tpl-compact {
+  padding: 14mm 13mm;
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  font-size: 9.2pt;
+  line-height: 1.35;
+}
+
+.tpl-compact .cv-name {
+  font-family: "Outfit", sans-serif;
+  font-size: 1.45rem;
+  letter-spacing: -0.02em;
+}
+
+.tpl-compact .cv-headline {
+  color: #1a5f7a;
+  font-weight: 650;
+  font-size: 0.9rem;
+}
+
+.tpl-compact .cv-contact {
+  margin-top: 0.4rem;
+  padding-bottom: 0.45rem;
+  border-bottom: 1px solid #dde3ea;
+  font-size: 0.8em;
+}
+
+.tpl-compact .cv-section {
+  margin-top: 0.7rem;
+}
+
+.tpl-compact .cv-item {
+  margin-bottom: 0.45rem;
+}
+
+/* Elegant */
+.tpl-elegant {
+  padding: 18mm 17mm;
+  font-family: "Libre Baskerville", Georgia, serif;
+  font-size: 10.3pt;
+  line-height: 1.5;
+}
+
+.tpl-elegant .cv-name {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #143a48;
+}
+
+.tpl-elegant .cv-headline {
+  margin-top: 0.3rem;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-style: normal;
+  color: #8a6a3d;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+}
+
+.tpl-elegant .cv-contact {
+  margin-top: 0.7rem;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  border-bottom: 1px solid #d4c4a8;
+  padding-bottom: 0.75rem;
+}
+
+.tpl-elegant .cv-section-title {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  color: #8a6a3d;
+  letter-spacing: 0.12em;
+}
+
+.tpl-elegant .cv-skill {
+  background: #f7f1e6;
+  color: #5c4a2e;
+}
+
+/* Bold */
+.tpl-bold {
+  display: grid;
+  grid-template-columns: 10px 1fr;
+  min-height: 297mm;
+  padding: 0;
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  font-size: 10pt;
+  line-height: 1.45;
+}
+
+.tpl-bold .cv-bold-bar {
+  background: #1a5f7a;
+}
+
+.tpl-bold .cv-bold-inner {
+  padding: 16mm 14mm;
+}
+
+.tpl-bold .cv-name {
+  font-family: "Outfit", sans-serif;
+  font-size: 2.1rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+}
+
+.tpl-bold .cv-headline {
+  margin-top: 0.35rem;
+  font-size: 1.05rem;
+  font-weight: 650;
+  color: #1a5f7a;
+}
+
+.tpl-bold .cv-contact {
+  margin-top: 0.65rem;
+  margin-bottom: 0.35rem;
+}
+
+.tpl-bold .cv-section-title {
+  background: #e6f2f6;
+  color: #144c62;
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+  letter-spacing: 0.06em;
+}
+
+/* —— Cover letter sheets —— */
+
+.cl-sheet {
+  padding: 18mm 16mm;
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.55;
+}
+
+.cl-name {
+  margin: 0;
+  font-family: "Outfit", sans-serif;
+  font-size: 1.55rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.cl-header {
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid #d8dee6;
+}
+
+.cl-date {
+  margin-bottom: 1rem !important;
+}
+
+.cl-recipient {
+  margin-bottom: 1rem;
+  line-height: 1.4;
+}
+
+.cl-role {
+  margin: 0 0 1rem !important;
+  font-weight: 700;
+}
+
+.cl-greeting {
+  margin: 0 0 0.85rem !important;
+}
+
+.cl-body {
+  white-space: pre-wrap;
+}
+
+.cl-body p,
+.cl-body {
+  margin-bottom: 0.85rem;
+}
+
+.cl-signoff {
+  margin-top: 1.5rem;
+}
+
+.cl-signature {
+  margin-top: 1.35rem !important;
+  font-weight: 700;
+}
+
+.cl-formal {
+  font-family: "Libre Baskerville", Georgia, serif;
+  font-size: 10.5pt;
+}
+
+.cl-formal .cl-name,
+.cl-formal .cl-role,
+.cl-formal .cl-signature {
+  font-family: "Libre Baskerville", Georgia, serif;
+}
+
+.cl-classic {
+  font-family: "Libre Baskerville", Georgia, serif;
+}
+
+.cl-classic .cl-header {
+  border-bottom-color: #1a5f7a;
+  border-bottom-width: 2px;
+}
+
+.cl-minimal {
+  padding: 22mm 20mm;
+}
+
+.cl-minimal .cl-header {
+  border: 0;
+  padding-bottom: 0.4rem;
+}
+
+.cl-minimal .cl-name {
+  font-size: 1.35rem;
+  font-weight: 600;
+}
+
+.cl-modern,
+.cl-banded {
+  padding: 0;
+}
+
+.cl-modern .cl-banner,
+.cl-banded .cl-banner {
+  padding: 12mm 16mm 10mm;
+  background: linear-gradient(135deg, #1a5f7a 0%, #0f3d4d 100%);
+  color: #fff;
+}
+
+.cl-banded .cl-banner {
+  background: #0f1c2e;
+  border-bottom: 6px solid #1a5f7a;
+}
+
+.cl-modern .cl-name,
+.cl-banded .cl-name {
+  color: #fff;
+}
+
+.cl-modern .cv-contact,
+.cl-banded .cv-contact {
+  margin-top: 0.55rem;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.cl-modern .cl-content,
+.cl-banded .cl-content {
+  padding: 10mm 16mm 16mm;
+}
+
+.cl-warm {
+  padding: 18mm 16mm;
+  background:
+    linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(135deg, #1a5f7a, #c4a574) border-box;
+  border: 2px solid transparent;
+}
+
+.cl-warm-header {
+  margin-bottom: 1.1rem;
+}
+
+.cl-warm .cl-name {
+  color: #143a48;
+}
+
+.cl-warm .cl-role {
+  color: #1a5f7a;
+}
+
 /* In-viewport capture target (under overlay). Off-screen capture renders blank. */
 .cv-export-mount {
   position: fixed;
@@ -591,6 +945,37 @@
 
 .cv-sheet-export.tpl-sidebar .cv-main-col {
   padding: 48px 36px !important;
+}
+
+.cv-sheet-export.tpl-executive,
+.cv-sheet-export.tpl-compact,
+.cv-sheet-export.tpl-elegant,
+.cv-sheet-export.cl-sheet {
+  padding: 56px 52px !important;
+}
+
+.cv-sheet-export.tpl-bold {
+  grid-template-columns: 12px 1fr !important;
+  min-height: 1123px !important;
+}
+
+.cv-sheet-export.tpl-bold .cv-bold-inner {
+  padding: 52px 48px !important;
+}
+
+.cv-sheet-export.cl-modern,
+.cv-sheet-export.cl-banded {
+  padding: 0 !important;
+}
+
+.cv-sheet-export.cl-modern .cl-banner,
+.cv-sheet-export.cl-banded .cl-banner {
+  padding: 40px 48px 32px !important;
+}
+
+.cv-sheet-export.cl-modern .cl-content,
+.cv-sheet-export.cl-banded .cl-content {
+  padding: 32px 48px 48px !important;
 }
 
 /* Keep preview readable on small screens without breaking export clones */
