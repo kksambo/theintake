@@ -87,11 +87,17 @@ select {
 }
 
 .brand {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.35rem;
-  letter-spacing: -0.03em;
-  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.brand-logo {
+  display: block;
+  height: 2.35rem;
+  width: auto;
+  max-width: min(220px, 52vw);
+  object-fit: contain;
 }
 
 .header-nav {
@@ -538,10 +544,17 @@ select {
 }
 
 .footer-brand {
+  display: inline-flex;
+  align-items: center;
   margin: 0;
-  font-family: var(--font-display);
-  font-weight: 700;
-  letter-spacing: -0.02em;
+}
+
+.footer-logo {
+  display: block;
+  height: 2rem;
+  width: auto;
+  max-width: 160px;
+  object-fit: contain;
 }
 
 .footer-note {

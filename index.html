@@ -10,18 +10,22 @@
   <meta name="robots" content="index, follow, max-image-preview:large" />
   <meta name="theme-color" content="#1a5f7a" />
   <link rel="canonical" href="https://theintake.co.za/" />
-  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32" />
+  <link rel="icon" href="favicon-16.png" type="image/png" sizes="16x16" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" sizes="180x180" />
 
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="The Intake" />
   <meta property="og:title" content="The Intake | Find Your Next Role" />
   <meta property="og:description" content="Browse open roles by title, company, location, category, and industry. Apply with one click." />
   <meta property="og:url" content="https://theintake.co.za/" />
+  <meta property="og:image" content="https://theintake.co.za/logo.jpg" />
   <meta property="og:locale" content="en_ZA" />
 
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="The Intake | Find Your Next Role" />
   <meta name="twitter:description" content="Browse open roles by title, company, location, category, and industry. Apply with one click." />
+  <meta name="twitter:image" content="https://theintake.co.za/logo.jpg" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -47,7 +51,7 @@
         "@type": "Organization",
         "name": "The Intake",
         "url": "https://theintake.co.za/",
-        "logo": "https://theintake.co.za/favicon.svg"
+        "logo": "https://theintake.co.za/logo.jpg"
       }
     ]
   }
@@ -56,7 +60,9 @@
 <body>
   <header class="site-header">
     <div class="header-inner">
-      <a class="brand" href="#top">The Intake</a>
+      <a class="brand" href="#top" aria-label="The Intake">
+        <img class="brand-logo" src="logo.jpg" alt="The Intake" width="220" height="124" />
+      </a>
       <nav class="header-nav" aria-label="Primary">
         <a href="#listings">Find jobs</a>
       </nav>
@@ -149,7 +155,9 @@
 
   <footer class="site-footer">
     <div class="footer-inner">
-      <p class="footer-brand">The Intake</p>
+      <a class="footer-brand" href="#top" aria-label="The Intake">
+        <img class="footer-logo" src="logo.jpg" alt="The Intake" width="160" height="90" />
+      </a>
       <p class="footer-note">Discover roles that fit.</p>
     </div>
   </footer>
