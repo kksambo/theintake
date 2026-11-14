@@ -524,15 +524,36 @@
   color: #1a5f7a;
 }
 
-/* Off-screen full-size sheet for PDF capture (no transform / overflow) */
+/* In-viewport capture target (under overlay). Off-screen capture renders blank. */
 .cv-export-mount {
   position: fixed;
-  left: -12000px;
+  left: 0;
   top: 0;
   width: 794px;
-  pointer-events: none;
-  opacity: 1;
+  z-index: 9998;
   overflow: visible;
+  pointer-events: none;
+}
+
+.cv-export-mount:empty {
+  display: none;
+}
+
+.cv-export-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  background: rgba(15, 28, 46, 0.72);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.cv-export-overlay[hidden] {
+  display: none !important;
 }
 
 .cv-sheet-export {

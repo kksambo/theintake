@@ -32,11 +32,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=20261114g" />
-  <link rel="stylesheet" href="cv.css?v=20261114g" />
+  <link rel="stylesheet" href="styles.css?v=20261114h" />
+  <link rel="stylesheet" href="cv.css?v=20261114h" />
 </head>
 <body class="cv-page">
   <div id="cv-export-mount" class="cv-export-mount" aria-hidden="true"></div>
+  <div id="cv-export-overlay" class="cv-export-overlay" hidden>
+    <p>Creating your PDF…</p>
+  </div>
   <header class="site-header">
     <div class="header-inner">
       <a class="brand" href="index.html" aria-label="The Intake">
@@ -175,9 +178,10 @@
     </div>
   </footer>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
-  <script src="cv.js?v=20261114g"></script>
+  <script src="cv.js?v=20261114h"></script>
 </body>
 </html>

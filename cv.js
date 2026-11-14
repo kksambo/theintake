@@ -419,7 +419,19 @@
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  /** Full-size clone outside scaled/overflow preview — used for PDF capture */
+  const exportOverlay = document.getElementById("cv-export-overlay");
+
+  function setExportBusy(busy, label) {
+    if (exportOverlay) {
+      exportOverlay.hidden = !busy;
+      if (label) {
+        const p = exportOverlay.querySelector("p");
+        if (p) p.textContent = label;
+      }
+    }
+  }
+
+  /** Full-size in-viewport clone for canvas capture */
   function buildExportSheet() {
     if (!exportMount) return null;
     exportMount.innerHTML = "";
@@ -440,9 +452,46 @@
     return link ? link.href : "cv.css";
   }
 
+  async function loadCvCssText() {
+    try {
+      const res = await fetch(getExportStylesheetHref(), { cache: "force-cache" });
+      if (!res.ok) throw new Error("css fetch failed");
+      return await res.text();
+    } catch (_) {
+      return "";
+    }
+  }
+
+  function canvasLooksBlank(canvas) {
+    try {
+      const ctx = canvas.getContext("2d");
+      const { width, height } = canvas;
+      if (!width || !height) return true;
+      const step = Math.max(8, Math.floor(Math.min(width, height) / 40));
+      let dark = 0;
+      let samples = 0;
+      for (let y = 0; y < height; y += step) {
+        for (let x = 0; x < width; x += step) {
+          const d = ctx.getImageData(x, y, 1, 1).data;
+          samples += 1;
+          if (d[0] + d[1] + d[2] < 720) dark += 1;
+        }
+      }
+      return dark / samples < 0.01;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function getJsPdf() {
+    if (window.jspdf && window.jspdf.jsPDF) return window.jspdf.jsPDF;
+    if (window.jsPDF) return window.jsPDF;
+    return null;
+  }
+
   async function openStyledPrintWindow() {
     const sheetHtml = `<div class="cv-sheet tpl-${state.template}">${buildSheetHtml()}</div>`;
-    const cssHref = getExportStylesheetHref();
+    const cssText = await loadCvCssText();
     const win = window.open("", "_blank", "noopener,noreferrer,width=900,height=1200");
     if (!win) {
       alert("Please allow pop-ups to print your CV.");
@@ -457,28 +506,26 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="${cssHref}" />
   <style>
-    html, body { margin: 0; padding: 0; background: #fff; }
-    .cv-sheet {
-      transform: none !important;
-      margin: 0 auto !important;
-      box-shadow: none !important;
-      width: 210mm !important;
-      min-height: 297mm !important;
-    }
-    @page { size: A4; margin: 0; }
-    @media print {
-      html, body { margin: 0; background: #fff; }
-      .cv-sheet { page-break-inside: avoid; }
-    }
+${cssText}
+html, body { margin: 0; padding: 0; background: #fff !important; }
+.cv-sheet {
+  transform: none !important;
+  margin: 0 auto !important;
+  box-shadow: none !important;
+  width: 210mm !important;
+  min-height: 297mm !important;
+}
+@page { size: A4; margin: 0; }
+@media print {
+  html, body { margin: 0; background: #fff !important; }
+}
   </style>
 </head>
 <body>${sheetHtml}</body>
 </html>`);
     win.document.close();
-    // Wait for stylesheet + fonts
-    await wait(450);
+    await wait(500);
     try {
       if (win.document.fonts && win.document.fonts.ready) {
         await win.document.fonts.ready;
@@ -486,61 +533,231 @@
     } catch (_) {
       /* ignore */
     }
-    await wait(150);
+    await wait(200);
     return win;
   }
 
   async function downloadPdf() {
-    if (!window.html2pdf) {
-      alert("PDF library failed to load. Check your connection and try again.");
+    const JsPDF = getJsPdf();
+    if (!window.html2canvas || !JsPDF) {
+      alert("PDF tools failed to load. Check your connection and try again.");
       return;
     }
     if (!hasContent()) {
       alert("Add some CV details before downloading.");
       return;
     }
+
     const btn = document.getElementById("download-pdf");
     btn.disabled = true;
     btn.textContent = "Preparing PDF…";
-    let sheet = null;
+    setExportBusy(true, "Creating your PDF…");
+
     try {
       if (document.fonts && document.fonts.ready) {
         await document.fonts.ready;
       }
-      sheet = buildExportSheet();
-      if (!sheet) throw new Error("Export mount missing");
-      await wait(200);
 
-      await window
-        .html2pdf()
-        .set({
-          margin: 0,
-          filename: `${fileBase()}.pdf`,
-          image: { type: "jpeg", quality: 0.98 },
-          html2canvas: {
-            scale: 2,
-            useCORS: true,
-            allowTaint: true,
-            backgroundColor: "#ffffff",
-            logging: false,
-            windowWidth: 794,
-            windowHeight: sheet.scrollHeight,
-            scrollX: 0,
-            scrollY: 0,
-          },
-          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-          pagebreak: { mode: ["css", "legacy"] },
-        })
-        .from(sheet)
-        .save();
+      const sheet = buildExportSheet();
+      if (!sheet) throw new Error("Export mount missing");
+
+      // Let layout settle in the viewport under the overlay
+      await wait(350);
+
+      const canvas = await window.html2canvas(sheet, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: "#ffffff",
+        logging: false,
+        width: 794,
+        windowWidth: 794,
+        scrollX: 0,
+        scrollY: 0,
+        onclone: (doc) => {
+          const cloned = doc.querySelector(".cv-sheet-export");
+          if (!cloned) return;
+          cloned.style.transform = "none";
+          cloned.style.width = "794px";
+          cloned.style.minHeight = "1123px";
+          cloned.style.background = "#ffffff";
+          cloned.style.color = "#1a1a1a";
+          const mount = doc.querySelector(".cv-export-mount");
+          if (mount) {
+            mount.style.left = "0";
+            mount.style.top = "0";
+            mount.style.opacity = "1";
+          }
+        },
+      });
+
+      if (canvasLooksBlank(canvas)) {
+        throw new Error("Blank canvas capture");
+      }
+
+      const imgData = canvas.toDataURL("image/jpeg", 0.98);
+      const pdf = new JsPDF({
+        unit: "mm",
+        format: "a4",
+        orientation: "portrait",
+        compress: true,
+      });
+
+      const pageWidth = 210;
+      const pageHeight = 297;
+      const imgWidth = pageWidth;
+      const imgHeight = (canvas.height * pageWidth) / canvas.width;
+
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight, undefined, "FAST");
+      heightLeft -= pageHeight;
+
+      while (heightLeft > 1) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight, undefined, "FAST");
+        heightLeft -= pageHeight;
+      }
+
+      pdf.save(`${fileBase()}.pdf`);
     } catch (err) {
       console.error(err);
-      alert("Could not create the PDF. Try Print instead.");
+      try {
+        saveTextPdfFallback();
+      } catch (err2) {
+        console.error(err2);
+        const usePrint = confirm(
+          "PDF download failed. Open the print dialog so you can choose “Save as PDF”?"
+        );
+        if (usePrint) await printCv();
+      }
     } finally {
       clearExportSheet();
+      setExportBusy(false);
       btn.disabled = false;
       btn.textContent = "Download PDF";
     }
+  }
+
+  /** Always-works PDF built with text (not a screenshot) */
+  function saveTextPdfFallback() {
+    const JsPDF = getJsPdf();
+    if (!JsPDF) throw new Error("jsPDF missing");
+    const pdf = new JsPDF({ unit: "mm", format: "a4", orientation: "portrait" });
+    const margin = 16;
+    const maxW = 210 - margin * 2;
+    let y = 18;
+    const accent = [26, 95, 122];
+
+    const ensureSpace = (need) => {
+      if (y + need > 287) {
+        pdf.addPage();
+        y = 18;
+      }
+    };
+
+    const writeWrapped = (text, opts = {}) => {
+      const size = opts.size || 10;
+      const lines = pdf.splitTextToSize(String(text || ""), opts.width || maxW);
+      ensureSpace(lines.length * (size * 0.45) + 2);
+      pdf.setFont("helvetica", opts.bold ? "bold" : "normal");
+      pdf.setFontSize(size);
+      if (opts.color) pdf.setTextColor(...opts.color);
+      else pdf.setTextColor(26, 26, 26);
+      pdf.text(lines, opts.x || margin, y);
+      y += lines.length * (size * 0.42) + (opts.after || 3);
+    };
+
+    const sectionTitle = (label) => {
+      ensureSpace(12);
+      y += 4;
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(11);
+      pdf.setTextColor(...accent);
+      pdf.text(label.toUpperCase(), margin, y);
+      y += 2;
+      pdf.setDrawColor(...accent);
+      pdf.setLineWidth(0.4);
+      pdf.line(margin, y, margin + maxW, y);
+      y += 6;
+    };
+
+    // Header band for modern feel
+    pdf.setFillColor(...accent);
+    pdf.rect(0, 0, 210, 36, "F");
+    pdf.setTextColor(255, 255, 255);
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(20);
+    pdf.text(state.fullName || "CV", margin, 16);
+    if (state.headline) {
+      pdf.setFont("helvetica", "normal");
+      pdf.setFontSize(11);
+      pdf.text(state.headline, margin, 24);
+    }
+    const contact = contactBits().join("  ·  ");
+    if (contact) {
+      pdf.setFontSize(8.5);
+      pdf.text(pdf.splitTextToSize(contact, maxW), margin, 31);
+    }
+    y = 46;
+
+    if (state.summary.trim()) {
+      sectionTitle("Profile");
+      writeWrapped(state.summary.trim(), { size: 10, after: 4 });
+    }
+
+    const expItems = state.experience.filter((e) => e.title || e.company || e.details);
+    if (expItems.length) {
+      sectionTitle("Experience");
+      expItems.forEach((e) => {
+        writeWrapped([e.title, e.company].filter(Boolean).join(" — "), {
+          bold: true,
+          size: 11,
+          after: 1,
+        });
+        writeWrapped(
+          [e.location, [e.start, e.end].filter(Boolean).join(" – ")]
+            .filter(Boolean)
+            .join(" · "),
+          { size: 9, color: [90, 100, 110], after: 2 }
+        );
+        if (e.details) {
+          e.details.split(/\n+/).forEach((line) => {
+            if (line.trim()) writeWrapped("• " + line.trim(), { size: 9.5, after: 1.5 });
+          });
+        }
+        y += 2;
+      });
+    }
+
+    const eduItems = state.education.filter(
+      (e) => e.school || e.qualification || e.details
+    );
+    if (eduItems.length) {
+      sectionTitle("Education");
+      eduItems.forEach((e) => {
+        writeWrapped([e.qualification, e.school].filter(Boolean).join(" — "), {
+          bold: true,
+          size: 11,
+          after: 1,
+        });
+        writeWrapped([e.start, e.end].filter(Boolean).join(" – "), {
+          size: 9,
+          color: [90, 100, 110],
+          after: 2,
+        });
+        if (e.details) writeWrapped(e.details, { size: 9.5, after: 2 });
+      });
+    }
+
+    if (skillsArray().length) {
+      sectionTitle("Skills");
+      writeWrapped(skillsArray().join(" · "), { size: 10, after: 2 });
+    }
+
+    pdf.save(`${fileBase()}.pdf`);
   }
 
   async function printCv() {
@@ -548,14 +765,17 @@
       alert("Add some CV details before printing.");
       return;
     }
-    const win = await openStyledPrintWindow();
-    if (!win) return;
+    setExportBusy(true, "Preparing print view…");
     try {
+      const win = await openStyledPrintWindow();
+      if (!win) return;
       win.focus();
       win.print();
     } catch (err) {
       console.error(err);
-      alert("Print failed. Try Download PDF instead.");
+      alert("Print failed. Please try again.");
+    } finally {
+      setExportBusy(false);
     }
   }
 
