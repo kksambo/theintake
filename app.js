@@ -374,43 +374,49 @@
       if (!res.ok) throw new Error("unavailable");
       const data = await res.json();
       setJobs(data);
-    } catch {
-      els.loadError.hidden = false;
-      els.empty.hidden = true;
-      els.headerCount.textContent = "Unavailable";
-      els.resultCount.textContent = "Open positions";
-      els.listingsUpdated.textContent = "";
+    } catch (err) {
+      console.error("Failed to load listings", err);
+      if (els.loadError) els.loadError.hidden = false;
+      if (els.empty) els.empty.hidden = true;
+      if (els.headerCount) els.headerCount.textContent = "Unavailable";
+      if (els.resultCount) els.resultCount.textContent = "Open positions";
+      if (els.listingsUpdated) els.listingsUpdated.textContent = "";
     }
   }
 
-  els.searchForm.addEventListener("submit", (e) => {
+  function on(el, event, handler) {
+    if (!el) return;
+    el.addEventListener(event, handler);
+  }
+
+  on(els.searchForm, "submit", (e) => {
     e.preventDefault();
     applyFilters();
     document.getElementById("listings")?.scrollIntoView({ behavior: "smooth" });
   });
 
-  els.search.addEventListener("input", applyFilters);
-  els.filterCategory.addEventListener("change", applyFilters);
-  els.filterCity.addEventListener("change", applyFilters);
-  els.filterIndustry.addEventListener("change", applyFilters);
-  els.filterSource.addEventListener("change", applyFilters);
+  on(els.search, "input", applyFilters);
+  on(els.filterCategory, "change", applyFilters);
+  on(els.filterCity, "change", applyFilters);
+  on(els.filterIndustry, "change", applyFilters);
+  on(els.filterSource, "change", applyFilters);
 
-  els.clearFilters.addEventListener("click", clearAllFilters);
-  els.emptyClear.addEventListener("click", clearAllFilters);
+  on(els.clearFilters, "click", clearAllFilters);
+  on(els.emptyClear, "click", clearAllFilters);
 
-  els.dialogClose.addEventListener("click", closeDialog);
-  els.dialog.addEventListener("click", (e) => {
+  on(els.dialogClose, "click", closeDialog);
+  on(els.dialog, "click", (e) => {
     if (e.target === els.dialog) closeDialog();
   });
 
-  els.dialogApply.addEventListener("click", () => {
+  on(els.dialogApply, "click", () => {
     const url = activeJob?.link;
     if (!url || url === "#") return;
     window.open(url, "_blank", "noopener,noreferrer");
   });
 
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && els.dialog.open) closeDialog();
+    if (e.key === "Escape" && els.dialog?.open) closeDialog();
   });
 
   loadListings();
