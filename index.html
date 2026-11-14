@@ -176,36 +176,6 @@
     </article>
   </dialog>
 
-  <dialog class="embed-dialog" id="embed-dialog" aria-label="Job application">
-    <div class="embed-shell">
-      <header class="embed-toolbar">
-        <button type="button" class="btn btn-secondary embed-back" id="embed-back">Back to details</button>
-        <p class="embed-title" id="embed-title">Application</p>
-        <div class="embed-toolbar-actions">
-          <a class="btn btn-secondary" id="embed-external" href="#">Open original</a>
-          <button type="button" class="dialog-close embed-close" id="embed-close" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
-        </div>
-      </header>
-      <div class="embed-frame-wrap">
-        <div class="embed-loading" id="embed-loading">Loading application…</div>
-        <div class="embed-blocked" id="embed-blocked" hidden>
-          <h3>This board won’t open inside The Intake</h3>
-          <p>For security, many job sites block in-page viewing. Continue in this tab to finish applying — use your browser Back button to return here.</p>
-          <a class="btn btn-primary" id="embed-blocked-link" href="#">Continue to posting</a>
-        </div>
-        <iframe
-          id="embed-frame"
-          class="embed-frame"
-          title="Job application"
-          referrerpolicy="no-referrer"
-          sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
-        ></iframe>
-      </div>
-    </div>
-  </dialog>
-
   <script src="app.js"></script>
 </body>
 </html>

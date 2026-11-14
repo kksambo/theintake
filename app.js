@@ -26,21 +26,11 @@
     dialogFacts: document.getElementById("dialog-facts"),
     dialogApply: document.getElementById("dialog-apply"),
     dialogCompany: document.getElementById("dialog-company"),
-    embedDialog: document.getElementById("embed-dialog"),
-    embedFrame: document.getElementById("embed-frame"),
-    embedTitle: document.getElementById("embed-title"),
-    embedLoading: document.getElementById("embed-loading"),
-    embedBlocked: document.getElementById("embed-blocked"),
-    embedExternal: document.getElementById("embed-external"),
-    embedBlockedLink: document.getElementById("embed-blocked-link"),
-    embedBack: document.getElementById("embed-back"),
-    embedClose: document.getElementById("embed-close"),
   };
 
   let jobs = [];
   let filtered = [];
   let activeJob = null;
-  let embedWatchTimer = null;
 
   const CITY_RULES = [
     { key: "Cape Town", match: /cape town|pinelands|claremont|blue downs|cape winelands|ottery/i },
@@ -378,87 +368,6 @@
     }
   }
 
-  function showModal(dialog) {
-    if (typeof dialog.showModal === "function") {
-      dialog.showModal();
-    } else {
-      dialog.setAttribute("open", "");
-    }
-  }
-
-  function hideModal(dialog) {
-    if (typeof dialog.close === "function") {
-      dialog.close();
-    } else {
-      dialog.removeAttribute("open");
-    }
-  }
-
-  function clearEmbedWatch() {
-    if (embedWatchTimer) {
-      clearTimeout(embedWatchTimer);
-      embedWatchTimer = null;
-    }
-  }
-
-  function showEmbedBlocked() {
-    els.embedDialog.classList.add("is-blocked");
-    els.embedLoading.hidden = true;
-    els.embedBlocked.hidden = false;
-    els.embedBlockedLink?.focus?.();
-  }
-
-  function openApplyEmbed(job) {
-    const url = job?.link;
-    if (!url || url === "#") return;
-
-    clearEmbedWatch();
-    els.embedDialog.classList.remove("is-blocked");
-    els.embedBlocked.hidden = true;
-    els.embedLoading.hidden = false;
-    els.embedTitle.textContent = `${job.title} · ${job.company}`;
-    els.embedExternal.href = url;
-    els.embedBlockedLink.href = url;
-
-    // Close details first, then open embed on the next tick.
-    // Opening a second <dialog> in the same click stack fails in some browsers.
-    closeDialog();
-
-    window.setTimeout(() => {
-      if (!els.embedDialog.open) showModal(els.embedDialog);
-
-      const onLoad = () => {
-        try {
-          const href = els.embedFrame.contentWindow?.location?.href || "";
-          if (!href || href === "about:blank") return;
-        } catch {
-          // Cross-origin page loaded inside the frame.
-        }
-        els.embedLoading.hidden = true;
-      };
-
-      els.embedFrame.onload = onLoad;
-      els.embedFrame.src = url;
-
-      embedWatchTimer = setTimeout(() => {
-        if (!els.embedLoading.hidden) showEmbedBlocked();
-      }, 4000);
-    }, 50);
-  }
-
-  function closeEmbed({ restoreDetails = false } = {}) {
-    clearEmbedWatch();
-    els.embedFrame.onload = null;
-    els.embedFrame.src = "about:blank";
-    els.embedLoading.hidden = false;
-    els.embedBlocked.hidden = true;
-    els.embedDialog.classList.remove("is-blocked");
-    hideModal(els.embedDialog);
-    if (restoreDetails && activeJob) {
-      window.setTimeout(() => openJob(activeJob), 50);
-    }
-  }
-
   async function loadListings() {
     try {
       const res = await fetch(DATA_URL, { cache: "no-store" });
@@ -494,31 +403,14 @@
     if (e.target === els.dialog) closeDialog();
   });
 
-  els.dialogApply.addEventListener("click", (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!activeJob) return;
-    openApplyEmbed(activeJob);
-  });
-
-  els.embedBack.addEventListener("click", () => {
-    closeEmbed({ restoreDetails: true });
-  });
-
-  els.embedClose.addEventListener("click", () => closeEmbed());
-
-  els.embedDialog.addEventListener("click", (e) => {
-    if (e.target === els.embedDialog) closeEmbed();
+  els.dialogApply.addEventListener("click", () => {
+    const url = activeJob?.link;
+    if (!url || url === "#") return;
+    window.open(url, "_blank", "noopener,noreferrer");
   });
 
   document.addEventListener("keydown", (e) => {
-    if (e.key !== "Escape") return;
-    if (els.embedDialog.open) {
-      e.preventDefault();
-      closeEmbed();
-      return;
-    }
-    if (els.dialog.open) closeDialog();
+    if (e.key === "Escape" && els.dialog.open) closeDialog();
   });
 
   loadListings();
