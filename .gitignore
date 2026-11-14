@@ -1,0 +1,8 @@
+.DS_Store
+*.log
+.vscode/
+.idea/
+
+# Local source dumps (site uses jobs.json)
+sicelo_*
+jobs_20*

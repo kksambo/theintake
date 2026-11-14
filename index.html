@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The Intake | Find Your Next Role</title>
+  <meta name="description" content="The Intake is a professional job search platform. Browse open roles by title, company, location, category, and industry — then apply with one click." />
+  <meta name="keywords" content="jobs, careers, job search, South Africa jobs, hiring, employment, The Intake" />
+  <meta name="author" content="The Intake" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="theme-color" content="#1a5f7a" />
+  <link rel="canonical" href="https://theintake.com/" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="The Intake" />
+  <meta property="og:title" content="The Intake | Find Your Next Role" />
+  <meta property="og:description" content="Browse open roles by title, company, location, category, and industry. Apply with one click." />
+  <meta property="og:url" content="https://theintake.com/" />
+  <meta property="og:locale" content="en_ZA" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="The Intake | Find Your Next Role" />
+  <meta name="twitter:description" content="Browse open roles by title, company, location, category, and industry. Apply with one click." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "name": "The Intake",
+        "url": "https://theintake.com/",
+        "description": "Professional job search platform to find and apply for open roles.",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://theintake.com/?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@type": "Organization",
+        "name": "The Intake",
+        "url": "https://theintake.com/",
+        "logo": "https://theintake.com/favicon.svg"
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#top">The Intake</a>
+      <nav class="header-nav" aria-label="Primary">
+        <a href="#listings">Find jobs</a>
+      </nav>
+      <p class="header-count" id="header-count" aria-live="polite">Loading jobs…</p>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="search-hero">
+      <div class="search-hero-inner">
+        <h1>Find your next role</h1>
+        <p class="search-lede">Search openings by title, company, or location.</p>
+
+        <form class="search-panel" id="search-form" role="search">
+          <div class="search-field search-field-main">
+            <label class="visually-hidden" for="search">Search jobs</label>
+            <svg class="field-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8" />
+              <path d="M20 20l-3.2-3.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+            </svg>
+            <input
+              type="search"
+              id="search"
+              name="q"
+              placeholder="Job title, company, or keyword"
+              autocomplete="off"
+            />
+          </div>
+
+          <div class="search-field">
+            <label class="visually-hidden" for="filter-city">Location</label>
+            <svg class="field-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 21s7-5.4 7-11a7 7 0 10-14 0c0 5.6 7 11 7 11z" stroke="currentColor" stroke-width="1.8" />
+              <circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="1.8" />
+            </svg>
+            <select id="filter-city">
+              <option value="">All locations</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn btn-primary search-submit">Search</button>
+        </form>
+
+        <div class="filter-bar">
+          <label class="filter">
+            <span>Category</span>
+            <select id="filter-category">
+              <option value="">All categories</option>
+            </select>
+          </label>
+          <label class="filter">
+            <span>Industry</span>
+            <select id="filter-industry">
+              <option value="">All industries</option>
+            </select>
+          </label>
+          <label class="filter">
+            <span>Listed on</span>
+            <select id="filter-source">
+              <option value="">All boards</option>
+            </select>
+          </label>
+          <button type="button" class="btn-text" id="clear-filters">Clear filters</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="listings" id="listings">
+      <div class="listings-inner">
+        <div class="listings-head">
+          <h2 id="result-count">Open positions</h2>
+          <p class="listings-updated" id="listings-updated"></p>
+        </div>
+
+        <ul class="job-list" id="job-list"></ul>
+
+        <div class="empty" id="empty" hidden>
+          <h3>No matching jobs</h3>
+          <p>Try a different search or clear your filters.</p>
+          <button type="button" class="btn btn-secondary" id="empty-clear">Clear filters</button>
+        </div>
+
+        <div class="load-error" id="load-error" hidden>
+          <h3>Jobs unavailable</h3>
+          <p>We couldn’t load openings right now. Please try again shortly.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p class="footer-brand">The Intake</p>
+      <p class="footer-note">Discover roles that fit.</p>
+    </div>
+  </footer>
+
+  <dialog class="job-dialog" id="job-dialog" aria-labelledby="dialog-title">
+    <article class="dialog-body">
+      <button type="button" class="dialog-close" id="dialog-close" aria-label="Close">
+        <span aria-hidden="true">×</span>
+      </button>
+      <div class="dialog-header">
+        <div class="job-logo job-logo-lg" id="dialog-logo" aria-hidden="true"></div>
+        <div class="dialog-heading">
+          <p class="dialog-eyebrow" id="dialog-category"></p>
+          <h2 id="dialog-title"></h2>
+          <p class="dialog-meta" id="dialog-meta"></p>
+        </div>
+      </div>
+      <p class="dialog-desc" id="dialog-desc"></p>
+      <dl class="dialog-facts" id="dialog-facts"></dl>
+      <div class="dialog-actions">
+        <a class="btn btn-primary" id="dialog-apply" href="#" target="_blank" rel="noopener noreferrer">Apply now</a>
+        <a class="btn btn-secondary" id="dialog-company" href="#" target="_blank" rel="noopener noreferrer">Company website</a>
+      </div>
+    </article>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
