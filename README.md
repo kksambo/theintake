@@ -2,7 +2,7 @@
 
 **The Intake** is a professional job search platform for discovering open roles across South Africa and beyond.
 
-**Live site:** [https://theintake.com](https://theintake.com)
+**Live site:** [https://theintake.co.za](https://theintake.co.za)
 
 ## Features
 
@@ -31,7 +31,7 @@ Replace `jobs.json` with your latest weekly export (same schema). Keep the filen
 
 ## GitHub Pages + custom domain
 
-This repository is configured for GitHub Pages with the custom domain **theintake.com** (see `CNAME`).
+This repository is configured for GitHub Pages with the custom domain **theintake.co.za** (see `CNAME`).
 
 ### 1. Enable Pages
 
@@ -40,7 +40,7 @@ This repository is configured for GitHub Pages with the custom domain **theintak
 3. **Branch:** `main` / `/ (root)`
 4. Save — GitHub will pick up `CNAME` automatically
 
-### 2. Point DNS for `theintake.com`
+### 2. Point DNS for `theintake.co.za`
 
 At your domain registrar, add:
 
@@ -54,15 +54,15 @@ At your domain registrar, add:
 
 After DNS propagates, in **Settings → Pages** confirm:
 
-- Custom domain is `theintake.com`
+- Custom domain is `theintake.co.za`
 - **Enforce HTTPS** is enabled
 
 ### 3. Show up on Google
 
 1. Go to [Google Search Console](https://search.google.com/search-console)
-2. Add property for `https://theintake.com`
+2. Add property for `https://theintake.co.za`
 3. Verify ownership (DNS TXT record or HTML meta tag)
-4. Submit sitemap: `https://theintake.com/sitemap.xml`
+4. Submit sitemap: `https://theintake.co.za/sitemap.xml`
 5. Request indexing for the homepage
 
 The site already includes SEO essentials: meta description, Open Graph tags, canonical URL, `robots.txt`, sitemap, and structured data.
