@@ -16,21 +16,10 @@
     loadError: document.getElementById("load-error"),
     clearFilters: document.getElementById("clear-filters"),
     emptyClear: document.getElementById("empty-clear"),
-    dialog: document.getElementById("job-dialog"),
-    dialogClose: document.getElementById("dialog-close"),
-    dialogLogo: document.getElementById("dialog-logo"),
-    dialogCategory: document.getElementById("dialog-category"),
-    dialogTitle: document.getElementById("dialog-title"),
-    dialogMeta: document.getElementById("dialog-meta"),
-    dialogDesc: document.getElementById("dialog-desc"),
-    dialogFacts: document.getElementById("dialog-facts"),
-    dialogApply: document.getElementById("dialog-apply"),
-    dialogCompany: document.getElementById("dialog-company"),
   };
 
   let jobs = [];
   let filtered = [];
-  let activeJob = null;
 
   const CITY_RULES = [
     { key: "Cape Town", match: /cape town|pinelands|claremont|blue downs|cape winelands|ottery/i },
@@ -149,6 +138,7 @@
         source: job.source || "Unknown",
         city: cityBucket(job.location),
         logo_url,
+        slug: job.slug || "",
       };
     });
   }
@@ -180,14 +170,6 @@
       </div>`;
   }
 
-  function fillLogoElement(el, job, extraClass = "") {
-    if (!el) return;
-    el.className = `job-logo ${extraClass} ${job.logo_url ? "" : "is-fallback"}`.trim();
-    el.setAttribute("aria-hidden", "true");
-    el.innerHTML = logoInnerHtml(job);
-    bindLogoFallback(el);
-  }
-
   function bindLogoFallback(root) {
     root.querySelectorAll(".job-logo-img").forEach((img) => {
       const wrap = img.closest(".job-logo");
@@ -198,7 +180,12 @@
   }
 
   function setJobs(raw) {
-    jobs = normalizeJobs(raw);
+    if (typeof JobSlug === "undefined") {
+      throw new Error("job-slug.js missing");
+    }
+    const slugs = JobSlug.assignSlugs(raw);
+    const tagged = raw.map((job, index) => ({ ...job, slug: slugs[index] }));
+    jobs = normalizeJobs(tagged);
     els.loadError.hidden = true;
 
     fillSelect(
@@ -284,12 +271,12 @@
 
     filtered.forEach((job) => {
       const li = document.createElement("li");
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "job-card";
-      btn.setAttribute("aria-label", `${job.title} at ${job.company}`);
+      const card = document.createElement("a");
+      card.className = "job-card";
+      card.href = `jobs/${job.slug}/`;
+      card.setAttribute("aria-label", `${job.title} at ${job.company}`);
 
-      btn.innerHTML = `
+      card.innerHTML = `
         ${logoMarkup(job)}
         <div class="job-body">
           <h3 class="job-title">${escapeHtml(job.title)}</h3>
@@ -310,62 +297,10 @@
         </div>
       `;
 
-      bindLogoFallback(btn);
-      btn.addEventListener("click", () => openJob(job));
-      li.appendChild(btn);
+      bindLogoFallback(card);
+      li.appendChild(card);
       els.jobList.appendChild(li);
     });
-  }
-
-  function openJob(job) {
-    activeJob = job;
-    fillLogoElement(els.dialogLogo, job, "job-logo-lg");
-
-    els.dialogCategory.textContent = job.category;
-    els.dialogTitle.textContent = job.title;
-    els.dialogMeta.textContent = `${job.company} · ${job.location || job.city}`;
-    els.dialogDesc.textContent =
-      job.description || "Details available on the full posting.";
-
-    const facts = [
-      ["Industry", job.industry || "—"],
-      ["Listed on", job.source || "—"],
-      ["Posted", formatDate(job.posting_date)],
-      ["Salary", job.salary || "Not listed"],
-      ["Location", job.location || "—"],
-      ["Requirements", job.requirements || "See full posting"],
-    ];
-
-    els.dialogFacts.innerHTML = facts
-      .map(
-        ([label, value]) => `
-        <div>
-          <dt>${escapeHtml(label)}</dt>
-          <dd>${escapeHtml(value)}</dd>
-        </div>`
-      )
-      .join("");
-
-    if (job.company_url) {
-      els.dialogCompany.hidden = false;
-      els.dialogCompany.href = job.company_url;
-    } else {
-      els.dialogCompany.hidden = true;
-    }
-
-    if (typeof els.dialog.showModal === "function") {
-      els.dialog.showModal();
-    } else {
-      els.dialog.setAttribute("open", "");
-    }
-  }
-
-  function closeDialog() {
-    if (typeof els.dialog.close === "function") {
-      els.dialog.close();
-    } else {
-      els.dialog.removeAttribute("open");
-    }
   }
 
   async function loadListings() {
@@ -403,21 +338,6 @@
 
   on(els.clearFilters, "click", clearAllFilters);
   on(els.emptyClear, "click", clearAllFilters);
-
-  on(els.dialogClose, "click", closeDialog);
-  on(els.dialog, "click", (e) => {
-    if (e.target === els.dialog) closeDialog();
-  });
-
-  on(els.dialogApply, "click", () => {
-    const url = activeJob?.link;
-    if (!url || url === "#") return;
-    window.open(url, "_blank", "noopener,noreferrer");
-  });
-
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && els.dialog?.open) closeDialog();
-  });
 
   loadListings();
 })();
