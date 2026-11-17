@@ -1,0 +1,63 @@
+# Rebuilds /jobs/<slug>/, sitemap.xml, and robots.txt after jobs.json changes.
+#
+# GitHub Pages (legacy, branch main, folder /) serves committed files only,
+# so this workflow commits the generated pages back to main.
+#
+# It does not loop:
+# - The commit touches jobs/, sitemap.xml, and robots.txt, never jobs.json.
+# - The push paths below do not include those generated files.
+# - A GITHUB_TOKEN push does not start a new workflow run.
+#
+# One-time: Settings → Actions → General → Workflow permissions
+# must be "Read and write permissions", or the push step is rejected.
+
+name: Regenerate job pages
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "jobs.json"
+      - "job-slug.js"
+      - "scripts/generate_job_pages.py"
+      - "scripts/test_generate_job_pages.py"
+      - ".github/workflows/regenerate-job-pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: regenerate-job-pages
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check slugs and JobPosting markup
+        run: python3 scripts/test_generate_job_pages.py
+
+      - name: Generate job pages and sitemap
+        run: python3 scripts/generate_job_pages.py
+
+      - name: Commit regenerated pages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A -- jobs sitemap.xml robots.txt
+          if git diff --cached --quiet; then
+            echo "Job pages already match jobs.json."
+            exit 0
+          fi
+          git commit -m "Regenerate job pages from jobs.json"
+          if ! git push origin HEAD:main; then
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi

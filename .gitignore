@@ -2,6 +2,8 @@
 *.log
 .vscode/
 .idea/
+__pycache__/
+*.pyc
 
 # Local source dumps (site uses jobs.json)
 sicelo_*
